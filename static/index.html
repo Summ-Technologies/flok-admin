@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Hotel Image Upload</title>
+    <link rel="stylesheet" href="/static/index.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="static/index.js"></script>
+  </head>
+
+  <body>
+    <h1>Hotel Image Upload</h1>
+    <h2>Search by either destination name, hotel name, or both:</h2>
+    <form id='hotel-finder' >
+        <div>
+            <label>Enter Hotel Name:</label>
+            <input required id='hotel-name-input' name='name'>
+        </div>
+
+        <div>
+            <label>Enter Destination name:</label>
+            <input required id='hotel-location-input' name='destination'>
+        </div>
+
+        <button type="button" onclick="findHotels()">Submit</button>
+        <h2>Select which hotel you would like to update from the list below:</h2>
+        <select id="hotel-select" onchange="if (this.selectedIndex) selectHotel();">
+        </select>
+    </form>
+
+    <div id="add-images">
+        <div>View Existing Images <a id="hotel-link" target="_blank" href="">here</a>.</div>
+        <form id="image-inputs">
+            <div class="img-input">
+                URL: <input name="url-0" type="url"/>
+                Alt text (optional): <input type="text" name="alt-0"/>
+                Spotlight? <input name="spotlight-0" type="checkbox"/>
+                <div class="img-msg" id="img-0-msg"></div>
+            </div>
+        </form>
+        <button onclick="addImageInput()">Enter More</button>
+        <button onclick="uploadImages()">Upload</button>
+    </div>
+  </body>
+</html>

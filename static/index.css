@@ -1,0 +1,7 @@
+.img-input {
+  display: flex;
+}
+
+#add-images {
+  visibility: hidden;
+}
