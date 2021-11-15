@@ -1,6 +1,7 @@
-from sqlalchemy.orm import Session
-from hawk_db.lodging import Hotel, HotelToImage, Destination
 from hawk_db.common import Image, ImageOrientation
+from hawk_db.lodging import Destination, Hotel, HotelToImage
+from sqlalchemy.orm import Session
+
 
 class HotelManager:
     def __init__(self, session: Session, config: dict = {}):
@@ -13,30 +14,23 @@ class HotelManager:
     def get_hotel_by_id(self, id):
         return self.session.query(Hotel).get(id)
 
-    def get_hotels_by_criteria(self, hotel_name=None, destination_name=None):
+    def get_hotels_by_criteria(self, hotel_name=None, destination_id=None):
         """
         Search for hotels matching possibly partial name or city names (location column of destinations),
         :param hotel_name: str, optional
-        :param destination_name: str, optional
+        :param destination_id: int, optional
         :returns: list, hotel records matching search criteria
         """
-        if not (hotel_name or destination_name):
+        if not (hotel_name or destination_id):
             return []
 
         q = self.session.query(Hotel)
         if hotel_name:
             hotel_name = '%' + hotel_name.strip('%') + '%'
-            q = q.filter(Hotel.name.like(hotel_name))
+            q = q.filter(Hotel.name.ilike(hotel_name))
 
-        if destination_name:
-            destination_name = '%' + destination_name.strip('%') + '%'
-            destination_ids = self.session.query(Destination)\
-                .filter(Destination.location.like(destination_name))\
-                .with_entities(Destination.id)\
-                .all()
-            destination_ids = [x for x, in destination_ids]
-
-            q = q.filter(Hotel.destination_id.in_(destination_ids))
+        if destination_id:
+            q = q.filter(Hotel.destination_id == destination_id)
 
         return q.all()
 

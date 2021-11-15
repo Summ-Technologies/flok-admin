@@ -1,6 +1,7 @@
 const ADMIN_URL = ''
 let HOTEL_ID = '';
 let HOTELS = [];
+let DESTINATIONS = [];
 
 function findHotels(e) {
     const data = $('#hotel-finder').serialize();
@@ -20,6 +21,16 @@ function findHotels(e) {
     return false;
 }
 
+function findDestinations(e) {
+    $.get(ADMIN_URL + "/api/destinations", function (res) {
+        const destinations = $("#hotel-location-input")
+        destinations.empty()
+        destinations.append('<option value="">Choose Destination</option>');
+        DESTINATIONS = res.destinations;
+        DESTINATIONS.map((val) => destinations.append(`<option value="${val.id}">${val.name}</option>`));
+    })
+}
+
 function setHotelOptions(hotels) {
     const select = $('#hotel-select');
     select.empty();
@@ -36,11 +47,22 @@ function selectHotel(e) {
 
 function addImageInput(e) {
     const numInputs = $('.img-input').length
-    $(`<div class="img-input">
+    $(`<div class="img-input py-2">
         URL: <input name="url-${numInputs}" type="url"/>
         Alt text (optional): <input name="alt-${numInputs}" type="text" />
-        Spotlight?<input name="spotlight-${numInputs}" type="checkbox"/>
+        Spotlight?<input name="spotlight-${numInputs}" type="checkbox" class="mx-1"/>
         <div class="img-msg" id="img-${numInputs}-msg"></div>
+    </div>`).appendTo('#image-inputs');
+}
+
+function clearImages() {
+    const imgInputs = $('#image-inputs')
+    imgInputs.empty()
+    $(`<div class="img-input py-2">
+        URL: <input name="url-0" type="url"/>
+        Alt text (optional): <input name="alt-0" type="text" />
+        Spotlight?<input name="spotlight-0" type="checkbox" class="mx-1"/>
+        <div class="img-msg" id="img-0-msg"></div>
     </div>`).appendTo('#image-inputs');
 }
 
@@ -71,7 +93,7 @@ function uploadImages(e) {
     });
 
     reqBody.imgs = reqBody.imgs.filter(obj => obj.url != '');
-
+    setLoading(true)
     $.ajax({
         url: ADMIN_URL + '/api/images',
         type: 'POST',
@@ -79,8 +101,9 @@ function uploadImages(e) {
         contentType: 'application/json',
         data: JSON.stringify(reqBody),
         success: function(res) {
+            setLoading(false)
             Object.keys(res).map(img_id => {
-                const msg = $('img-' + img_id + '-msg');
+                const msg = $('#img-' + img_id + '-msg');
                 msg.css('visibility', 'visible')
                 if (res[img_id] === true) {
                     msg.text('success');
@@ -89,6 +112,25 @@ function uploadImages(e) {
                     msg.text('failure');
                 }
             });
+        },
+        error: function(res) {
+            setLoading(false)
+            alert('there was an error uploading the images')
         }
     });
 }
+
+function setLoading(isLoading) {
+    let button = $("#upload-btn")
+    if (isLoading) {
+        button.attr('disabled', 'disabled')
+        button.html('<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>')
+    } else {
+        button.removeAttr('disabled')
+        button.html('Upload')
+    }
+}
+
+$(document).ready(() => {
+    findDestinations()
+})

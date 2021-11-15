@@ -6,6 +6,36 @@ from ..managers.hotel_manager import *
 hotel_manager = HotelManager(db.session, app.config)
 
 
+@app.route("/api/destinations", methods=["get"])
+def destinations():
+    """
+    get all available destinations
+    returns -
+    {
+        destinations: [
+            {
+                name: name of destinations
+                id: id of destination
+            }
+            , ...
+        ]
+    }
+    """
+    return jsonify(
+        {
+            "destinations": list(
+                map(
+                    lambda dest: {
+                        "name": f"{dest.location}, {dest.country_abbreviation}",
+                        "id": dest.id,
+                    },
+                    db.session.query(Destination).all(),
+                )
+            )
+        }
+    )
+
+
 @app.route("/api/hotel", methods=["get"])
 def hotel():
     """
@@ -25,23 +55,29 @@ def hotel():
         ]
         success: boolean, whether the query was good or not
     """
-    name = request.args.get('name', None)
-    destination = request.args.get('destination', None)
+    name = request.args.get("name", None)
+    destination = request.args.get("destination", None)
 
     if not (name or destination):
-        return 'No search criteria provided.', 400
+        return "No search criteria provided.", 400
 
     hotels = hotel_manager.get_hotels_by_criteria(name, destination)
 
-    hotels = [{
-        'link': 'https://app.goflok.com/r/92c3b8c6-7b65-4213-9921-54970a675a3f/hotels/' + str(h.guid),
-        'name': h.name,
-        'location': h.street_address,
-        'id': h.id
-    } for h in hotels]
+    hotels = [
+        {
+            "link": "https://app.goflok.com/r/92c3b8c6-7b65-4213-9921-54970a675a3f/hotels/"
+            + str(h.guid),
+            "name": h.name,
+            "location": h.street_address,
+            "id": h.id,
+        }
+        for h in hotels
+    ]
 
-    response = jsonify({
-        'hotels': hotels,
-        'success': len(hotels) != 0,
-    })
+    response = jsonify(
+        {
+            "hotels": hotels,
+            "success": len(hotels) != 0,
+        }
+    )
     return response
