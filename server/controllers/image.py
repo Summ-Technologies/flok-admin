@@ -1,3 +1,4 @@
+import logging
 import uuid
 from io import BytesIO
 
@@ -5,12 +6,14 @@ import boto3 as boto3
 import requests
 from botocore.exceptions import ClientError
 from flask import jsonify, request
-from PIL import Image
+from PIL import Image as PILImage
 
 from .. import app, db
 from ..managers.hotel_manager import *
 
 hotel_manager = HotelManager(db.session, app.config)
+
+logger = logging.getLogger(__name__)
 
 @app.route('/api/images', methods=['POST'])
 def add_images():
@@ -36,7 +39,7 @@ def add_images():
     SPOTLIGHT_SIZE = (400, 400)
     GALLERY_SIZE = (1000, 1000)
 
-    app.logger.info('fuck this')
+    logger.info('starting image processing')
 
     data = request.get_json(force=True)
 
@@ -60,8 +63,9 @@ def add_images():
 
         try:
             response = requests.get(url)
-            img = Image.open(BytesIO(response.content))
-        except:
+            img = PILImage.open(BytesIO(response.content))
+        except Exception as e:
+            logger.error('%s failed to download with exception', url, exc_info=e)
             successes[img_id] = False
             continue
 
@@ -123,7 +127,7 @@ def upload_img(img, orig_url, hotel_name):
     bucket = "flok-b32d43c"
     uuid_str = str(uuid.uuid4())[0:8]
     ext = orig_url.split('.')[-1]
-    obj_name = f'hotels-test/{hotel_name.strip().replace(" ", "-").lower()}/{uuid_str}.{ext}'
+    obj_name = f'hotels-test/{hotel_name.strip().replace(" ", "-").lower()}-{uuid_str}.{ext}'
     s3_client = boto3.client(
         's3',
         aws_access_key_id=app.config["AWS_ACCESS_KEY"],
