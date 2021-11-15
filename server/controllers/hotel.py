@@ -81,3 +81,22 @@ def hotel():
         }
     )
     return response
+
+
+@app.route("/api/hotel/<int:id>", methods=["get"])
+def hotel_by_id(id):
+    """
+    get hotel by id
+    """
+    hotel = hotel_manager.get_hotel_by_id(id)
+    if hotel:
+        hotel = {
+            "link": "https://app.goflok.com/r/92c3b8c6-7b65-4213-9921-54970a675a3f/hotels/"
+            + str(hotel.guid),
+            "name": hotel.name,
+            "location": hotel.street_address,
+            "id": hotel.id,
+            "imgs": list(map(lambda img: img.image_url, hotel.imgs)),
+            "spotlight_img": hotel.spotlight_img.image_url,
+        }
+    return jsonify({"hotel": hotel, "success": hotel != None})

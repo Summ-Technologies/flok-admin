@@ -1,4 +1,4 @@
-const ADMIN_URL = ''
+const ADMIN_URL = '';
 let HOTEL_ID = '';
 let HOTELS = [];
 let DESTINATIONS = [];
@@ -41,7 +41,7 @@ function setHotelOptions(hotels) {
 function selectHotel(e) {
     const hotel = HOTELS[$('#hotel-select').val()]
     HOTEL_ID = hotel.id;
-    $('#hotel-link').attr('href', hotel.link);
+    $('#hotel-link').attr('href', `/images.html?id=${hotel.id}`);
     $('.img-msg').each(function() {$(this).html('')});
 }
 
