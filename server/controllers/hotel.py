@@ -1,8 +1,12 @@
-from flask import request, jsonify
-from .. import app, hotel_manager
+from flask import jsonify, request
+
+from .. import app, db
+from ..managers.hotel_manager import *
+
+hotel_manager = HotelManager(db.session, app.config)
 
 
-@app.route("/hotel", methods=["get"])
+@app.route("/api/hotel", methods=["get"])
 def hotel():
     """
     find all matching hotels by name, destination, or both.

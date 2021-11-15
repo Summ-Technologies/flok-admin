@@ -1,10 +1,10 @@
-const ADMIN_URL = 'http://localhost:4444'
+const ADMIN_URL = ''
 let HOTEL_ID = '';
 let HOTELS = [];
 
 function findHotels(e) {
     const data = $('#hotel-finder').serialize();
-    $.get(ADMIN_URL + '/hotel?' + data, function(res) {
+    $.get(ADMIN_URL + '/api/hotel?' + data, function(res) {
         if (!res.success) {
             alert('Could not find hotel, please try again');
             $('#hotel-finder')[0].reset();
@@ -73,7 +73,7 @@ function uploadImages(e) {
     reqBody.imgs = reqBody.imgs.filter(obj => obj.url != '');
 
     $.ajax({
-        url: ADMIN_URL + '/images',
+        url: ADMIN_URL + '/api/images',
         type: 'POST',
         dataType: 'json',
         contentType: 'application/json',
@@ -82,7 +82,7 @@ function uploadImages(e) {
             Object.keys(res).map(img_id => {
                 const msg = $('img-' + img_id + '-msg');
                 msg.css('visibility', 'visible')
-                if (res[img_id] === True) {
+                if (res[img_id] === true) {
                     msg.text('success');
                 }
                 else {

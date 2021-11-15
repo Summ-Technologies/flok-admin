@@ -16,5 +16,11 @@ RUN apt-get install -y libpq-dev python3-dev gcc \
 # Copy server code to the /app/ dir
 COPY ./config.py ./
 COPY ./server ./server
+COPY ./static ./static
 
 ENV APP_CONFIG /app/config.py
+
+RUN apt-get install nginx -y
+COPY nginx.conf /etc/nginx/sites-enabled/default
+
+COPY entrypoint.sh /entrypoint.sh
