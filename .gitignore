@@ -10,3 +10,4 @@ __pycache__
 .mypy_cache
 setup.cfg
 app.log
+*credentials.json
