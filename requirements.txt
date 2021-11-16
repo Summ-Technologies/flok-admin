@@ -1,3 +1,4 @@
+alembic==1.7.5
 aniso8601==9.0.1
 bcrypt==3.2.0
 boto3==1.19.12
@@ -19,14 +20,17 @@ google-auth-oauthlib==0.4.6
 googleapis-common-protos==1.53.0
 hawk-auth==0.1.0rc1634278026
 hawk-core==0.1.0rc1634278027
-hawk-db==0.1.0rc1634278028
+hawk-db==0.1.0rc1636377923
 hawk-models==0.1.0rc1634278029
 httplib2==0.20.2
 idna==3.3
+importlib-metadata==4.8.2
+importlib-resources==5.4.0
 itsdangerous==2.0.1
 Jinja2==3.0.2
 jmespath==0.10.0
 JSON-log-formatter==0.3.0
+Mako==1.1.5
 MarkupSafe==2.0.1
 marshmallow==3.9.1
 mypy-extensions==0.4.3
@@ -62,3 +66,4 @@ uritemplate==4.1.1
 urllib3==1.26.7
 webargs==6.1.1
 Werkzeug==2.0.2
+zipp==3.6.0
