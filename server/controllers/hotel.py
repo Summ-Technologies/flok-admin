@@ -2,8 +2,15 @@ from flask import jsonify, request
 
 from .. import app, db
 from ..managers.hotel_manager import *
+from ..managers.content_manager import *
 
 hotel_manager = HotelManager(db.session, app.config)
+content_manager = ContentManager(db.session, app.config)
+
+
+@app.route('/api/update_destinations', methods=['GET'])
+def update_destinations():
+    return content_manager.update_destinations()
 
 
 @app.route("/api/destinations", methods=["get"])
