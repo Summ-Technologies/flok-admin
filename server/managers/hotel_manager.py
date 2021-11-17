@@ -34,7 +34,7 @@ class HotelManager:
 
         return q.all()
 
-    def add_image(self, hotel_id: int, image_url: str, alt='', spotlight=False, portrait=False):
+    def add_image(self, hotel_id: int, image_url: str, alt='', spotlight=False, portrait=False, tag='MISCELLANEOUS'):
         """
         Add image to database and update necessary relations for hotel.
         :param hotel_id: id of hotel to add image to
@@ -49,7 +49,7 @@ class HotelManager:
             return False
 
         orientation = ImageOrientation.PORTRAIT if portrait else ImageOrientation.LANDSCAPE
-        new_image = Image(image_url=image_url, alt=alt, orientation=orientation)
+        new_image = Image(image_url=image_url, alt=alt, orientation=orientation, tag=tag)
         self.session.add(new_image)
         self.commit_changes()
 

@@ -27,6 +27,9 @@ function findDestinations(e) {
         destinations.empty()
         destinations.append('<option value="">Choose Destination</option>');
         DESTINATIONS = res.destinations;
+        DESTINATIONS.sort(function (a, b) {
+            return a.location < b.location
+        })
         DESTINATIONS.map((val) => destinations.append(`<option value="${val.id}">${val.name}</option>`));
     })
 }
@@ -47,10 +50,29 @@ function selectHotel(e) {
 
 function addImageInput(e) {
     const numInputs = $('.img-input').length
-    $(`<div class="img-input py-2">
+    $(`<div class="img-input py-2 border-bottom">
+        <div class="d-flex flex-wrap justify-content-center row-gutters">
+        <div>
         URL: <input name="url-${numInputs}" type="url"/>
+        </div>
+        <div>
         Alt text (optional): <input name="alt-${numInputs}" type="text" />
+        </div>
+        <div>
         Spotlight?<input name="spotlight-${numInputs}" type="checkbox" class="mx-1"/>
+        </div>
+        <div>
+        Tag: 
+        <select name="tag-${numInputs}">
+            <option value="MISCELLANEOUS" selected>Misc.</option>
+            <option value="MEETING_ROOM">Meeting Rooms</option>
+            <option value="HOTEL_ROOM">Hotel Rooms</option>
+            <option value="HOTEL_EXTERIOR">Hotel Exterior</option>
+            <option value="DINING_AREA">Dining Area</option>
+            <option value="COMMON_SPACE">Common Space</option>
+        </select>
+        </div>
+        </div>
         <div class="img-msg" id="img-${numInputs}-msg"></div>
     </div>`).appendTo('#image-inputs');
 }
@@ -71,10 +93,9 @@ function uploadImages(e) {
     const numInputs = $('.img-input').length
     console.log(numInputs);
     const reqBody = {
-        imgs: Array.from({length: numInputs}, () => ({url: '', alt: ''})),
+        imgs: Array.from({length: numInputs}, () => ({url: '', alt: '', tag: ''})),
         hotel_id: HOTEL_ID
     };
-    console.log(reqBody);
 
     data.forEach(next => {
         const img_info = {};
@@ -89,6 +110,9 @@ function uploadImages(e) {
         }
         else if (next.name.startsWith('spotlight') && next.value === 'on') {
             reqBody.spotlight_idx = idx;
+        }
+        else if (next.name.startsWith('tag')) {
+            reqBody.imgs[idx].tag = next.value;
         }
     });
 

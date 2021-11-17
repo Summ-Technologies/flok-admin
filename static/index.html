@@ -17,11 +17,6 @@
     <h2>Search by either destination name, hotel name, or both:</h2>
     <form id='hotel-finder' >
         <div class="py-2">
-            <label>Enter Hotel Name:</label>
-            <input required id='hotel-name-input' name='name'>
-        </div>
-
-        <div class="py-2">
             <label>Enter Destination name:</label>
             <select required id='hotel-location-input' name='destination'>
             </select>
@@ -36,11 +31,32 @@
     <div id="add-images">
         <div class="py-2">View Existing Images <a id="hotel-link" target="_blank" href="">here</a>.</div>
         <form class="py-2" id="image-inputs">
-            <div class="img-input py-2">
-                URL: <input name="url-0" type="url"/>
+            <div class="img-input py-2 border-bottom">
+              <div class="d-flex flex-wrap justify-content-center row-gutters">
+                <div>
+                  URL: <input name="url-0" type="url"/>
+                </div>
+                <div>
                 Alt text (optional): <input type="text" name="alt-0"/>
+                </div>
+                <div>
+                </div>
+                <div>
+                Tag: 
+                <select name="tag-0">
+                  <option value="MISCELLANEOUS" selected>Misc.</option>
+                  <option value="MEETING_ROOM">Meeting Rooms</option>
+                  <option value="HOTEL_ROOM">Hotel Rooms</option>
+                  <option value="HOTEL_EXTERIOR">Hotel Exterior</option>
+                  <option value="DINING_AREA">Dining Area</option>
+                  <option value="COMMON_SPACE">Common Space</option>
+                </select>
+                </div>
+                <div>
                 Spotlight? <input name="spotlight-0" type="checkbox" class="mx-1"/>
-                <div class="img-msg" id="img-0-msg"></div>
+                </div>
+              </div>
+              <div class="img-msg" id="img-0-msg"></div>
             </div>
         </form>
         <div class="gx-2 py-2">

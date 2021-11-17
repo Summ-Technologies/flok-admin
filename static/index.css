@@ -1,3 +1,12 @@
 #add-images {
   visibility: hidden;
 }
+
+.row-gutters {
+  margin-left: -5px;
+}
+
+.row-gutters > * {
+  margin-left: 5px;
+  margin-bottom: 5px;
+}

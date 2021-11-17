@@ -55,6 +55,7 @@ def add_images():
     for i, img_obj in enumerate(data.get("imgs", [])):
         url = img_obj.get("url", "")
         alt = img_obj.get("alt", "")
+        tag = img_obj.get("tag", "")
         img_id = img_obj.get("id", -1)
 
         if img_id == -1 or not url:
@@ -82,7 +83,7 @@ def add_images():
 
         w, h = img.size
         successes[img_id] = hotel_manager.add_image(
-            hotel_id, s3_url, alt, spotlight_idx == i, h >= w
+            hotel_id, s3_url, alt, spotlight_idx == i, h >= w, tag
         )
 
     response = jsonify(successes)
@@ -139,7 +140,7 @@ def upload_img(img, orig_url, hotel_name):
                 break
         else:
             ext = "jpg"
-    obj_name = f'hotels/{hotel_name.strip().replace(" ", "-").lower()}-{uuid_str}.{ext}'
+    obj_name = f'{app.config.get("AWS_HOTELS_PREFIX", "hotels")}/{hotel_name.strip().replace(" ", "-").lower()}-{uuid_str}.{ext}'
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=app.config["AWS_ACCESS_KEY"],
