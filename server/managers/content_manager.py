@@ -5,10 +5,8 @@ from hawk_db.lodging import Destination, DestinationTag, Hotel, HotelTag, Lodgin
 from sqlalchemy.orm import Session, load_only
 
 
-def setup_sheets_service():
-    credentials = service_account.Credentials.from_service_account_file(
-        "google_credentials.json"
-    )
+def setup_sheets_service(creds):
+    credentials = service_account.Credentials.from_service_account_file(creds)
     scoped_creds = credentials.with_scopes(
         ["https://www.googleapis.com/auth/spreadsheets.readonly"]
     )
@@ -60,7 +58,10 @@ class ContentManager:
     def __init__(self, session: Session, config: dict = {}):
         self.session = session
         self.config = config
-        self.sheets_service = setup_sheets_service()
+        if config.get("GOOGLE_CREDENTIALS_PATH"):
+            self.sheets_service = setup_sheets_service(
+                config.get("GOOGLE_CREDENTIALS_PATH")
+            )
 
     def commit_changes(self):
         self.session.commit()
