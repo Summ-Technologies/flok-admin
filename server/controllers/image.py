@@ -15,7 +15,8 @@ hotel_manager = HotelManager(db.session, app.config)
 
 logger = logging.getLogger(__name__)
 
-@app.route('/api/images', methods=['POST'])
+
+@app.route("/api/images", methods=["POST"])
 def add_images():
     """
     upload images from url to s3 bucket and save to database with correct hotel relations.
@@ -39,33 +40,33 @@ def add_images():
     SPOTLIGHT_SIZE = (400, 400)
     GALLERY_SIZE = (1000, 1000)
 
-    logger.info('starting image processing')
+    logger.info("starting image processing")
 
     data = request.get_json(force=True)
 
-    spotlight_idx = data.get('spotlight_idx', -1)
+    spotlight_idx = data.get("spotlight_idx", -1)
 
-    hotel_id = data.get('hotel_id', None)
+    hotel_id = data.get("hotel_id", None)
     if hotel_id is None:
         return "No Hotel ID provided", 400
     hotel = hotel_manager.get_hotel_by_id(hotel_id)
-    
+
     successes = {}
-    for i, img_obj in enumerate(data.get('imgs', [])):
-        url = img_obj.get('url', '')
-        alt = img_obj.get('alt', '')
-        img_id = img_obj.get('id', -1)
+    for i, img_obj in enumerate(data.get("imgs", [])):
+        url = img_obj.get("url", "")
+        alt = img_obj.get("alt", "")
+        img_id = img_obj.get("id", -1)
 
         if img_id == -1 or not url:
-            return 'Each image must have an id.', 400
+            return "Each image must have an id.", 400
         if not url:
-            return 'Each image must have a url.', 400
+            return "Each image must have a url.", 400
 
         try:
             response = requests.get(url)
             img = PILImage.open(BytesIO(response.content))
         except Exception as e:
-            logger.error('%s failed to download with exception', url, exc_info=e)
+            logger.error("%s failed to download with exception", url, exc_info=e)
             successes[img_id] = False
             continue
 
@@ -80,7 +81,9 @@ def add_images():
             continue
 
         w, h = img.size
-        successes[img_id] = hotel_manager.add_image(hotel_id, s3_url, alt, spotlight_idx == i, h >= w)
+        successes[img_id] = hotel_manager.add_image(
+            hotel_id, s3_url, alt, spotlight_idx == i, h >= w
+        )
 
     response = jsonify(successes)
     return response
@@ -89,10 +92,10 @@ def add_images():
 def resize_img(img, dims):
     """
     resizes image to less than or equal to dims, and maintains its aspect ratio by cropping after resizing one dimension when necessary.
-    Parameters - 
+    Parameters -
     img - PIL.Image
     dims - (w, h)
-    Returns - 
+    Returns -
     PIL.Image
     >>> img = Image.open(BytesIO(requests.get('https://jacob-hanson.com/static/media/collage.a72a9f48.jpg').content))
     >>> new = resize_img(img, (400, 400))
@@ -126,10 +129,19 @@ def upload_img(img, orig_url, hotel_name):
     """
     bucket = "flok-b32d43c"
     uuid_str = str(uuid.uuid4())[0:8]
-    ext = orig_url.split('.')[-1]
-    obj_name = f'hotels-test/{hotel_name.strip().replace(" ", "-").lower()}-{uuid_str}.{ext}'
+    ext = orig_url.split(".")[-1]
+    ext = ext.split("?")[0]
+    known_exts = ["jpg", "jpeg", "png"]
+    if ext not in known_exts:
+        for known_ext in known_exts:
+            if known_ext in ext:
+                ext = known_ext
+                break
+        else:
+            ext = "jpg"
+    obj_name = f'hotels/{hotel_name.strip().replace(" ", "-").lower()}-{uuid_str}.{ext}'
     s3_client = boto3.client(
-        's3',
+        "s3",
         aws_access_key_id=app.config["AWS_ACCESS_KEY"],
         aws_secret_access_key=app.config["AWS_SECRET_KEY"],
     )
@@ -139,7 +151,9 @@ def upload_img(img, orig_url, hotel_name):
     in_mem_img.seek(0)
 
     try:
-        s3_client.upload_fileobj(in_mem_img, bucket, obj_name, ExtraArgs={'ACL': 'public-read'})
+        s3_client.upload_fileobj(
+            in_mem_img, bucket, obj_name, ExtraArgs={"ACL": "public-read"}
+        )
     except ClientError as e:
         return False
-    return f'https://{bucket}.s3.amazonaws.com/{obj_name}'
+    return f"https://{bucket}.s3.amazonaws.com/{obj_name}"
