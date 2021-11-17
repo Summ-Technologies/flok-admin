@@ -8,19 +8,21 @@ hotel_manager = HotelManager(db.session, app.config)
 content_manager = ContentManager(db.session, app.config)
 
 
-@app.route('/api/update_destinations', methods=['GET'])
+@app.route("/api/update_destinations", methods=["GET"])
 def update_destinations():
     return content_manager.update_destinations()
 
-@app.route('/api/update_hotels', methods=['GET'])
+
+@app.route("/api/update_hotels", methods=["GET"])
 def update_hotels():
     return content_manager.update_hotels()
 
-@app.route('/api/update_db', methods=['GET'])
+
+@app.route("/api/update_db", methods=["GET"])
 def update_db():
     content_manager.update_hotels()
     content_manager.update_destinations()
-    return {}
+
 
 @app.route("/api/destinations", methods=["get"])
 def destinations():
