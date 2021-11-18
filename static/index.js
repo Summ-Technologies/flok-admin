@@ -80,12 +80,30 @@ function addImageInput(e) {
 function clearImages() {
     const imgInputs = $('#image-inputs')
     imgInputs.empty()
-    $(`<div class="img-input py-2">
+    $(`<div class="img-input py-2 border-bottom">
+        <div class="d-flex flex-wrap justify-content-center row-gutters">
+        <div>
         URL: <input name="url-0" type="url"/>
+        </div>
+        <div>
         Alt text (optional): <input name="alt-0" type="text" />
+        </div>
+        <div>
         Spotlight?<input name="spotlight-0" type="checkbox" class="mx-1"/>
-        <div class="img-msg" id="img-0-msg"></div>
-    </div>`).appendTo('#image-inputs');
+        </div>
+        <div>
+        Tag: 
+        <select name="tag-0">
+            <option value="MISCELLANEOUS" selected>Misc.</option>
+            <option value="MEETING_ROOM">Meeting Rooms</option>
+            <option value="HOTEL_ROOM">Hotel Rooms</option>
+            <option value="HOTEL_EXTERIOR">Hotel Exterior</option>
+            <option value="DINING_AREA">Dining Area</option>
+            <option value="COMMON_SPACE">Common Space</option>
+        </select>
+        </div>
+        </div>
+        <div class="img-msg" id="img-0-msg"></div>`).appendTo('#image-inputs');
 }
 
 function uploadImages(e) {
