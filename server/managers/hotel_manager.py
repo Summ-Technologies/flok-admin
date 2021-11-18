@@ -48,12 +48,18 @@ class HotelManager:
         if not hotel:
             return False
 
+        order = self.session.query(HotelToImage).filter(HotelToImage.hotel_id == hotel_id).count()
+        if not alt:
+            if spotlight:
+                alt = f"Spotlight for {hotel.name}"
+            else:
+                alt = f"{tag} for {hotel.name}"
+
         orientation = ImageOrientation.PORTRAIT if portrait else ImageOrientation.LANDSCAPE
         new_image = Image(image_url=image_url, alt=alt, orientation=orientation, tag=tag)
         self.session.add(new_image)
-        self.commit_changes()
+        self.session.flush()
 
-        order = self.session.query(HotelToImage).filter(HotelToImage.hotel_id == hotel_id).count()
         hotel_to_image = HotelToImage(hotel_id=hotel.id, image_id=new_image.id, order=order)
         self.session.add(hotel_to_image)
         self.commit_changes()
