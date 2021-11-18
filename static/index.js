@@ -65,11 +65,14 @@ function addImageInput(e) {
         Tag: 
         <select name="tag-${numInputs}">
             <option value="MISCELLANEOUS" selected>Misc.</option>
-            <option value="MEETING_ROOM">Meeting Rooms</option>
-            <option value="HOTEL_ROOM">Hotel Rooms</option>
-            <option value="HOTEL_EXTERIOR">Hotel Exterior</option>
-            <option value="DINING_AREA">Dining Area</option>
-            <option value="COMMON_SPACE">Common Space</option>
+            <option value="MEETING_SPACE">Meeting space</option>
+            <option value="BUILDING_EXTERIOR">Building exterior</option>
+            <option value="OUTDOOR_SPACES">Hotel outdoor (landscape, etc.)</option>
+            <option value="INTERIOR_COMMON_SPACES">Hotel common space (interior)</option>
+            <option value="DINING_SPACE">Dining space</option>
+            <option value="HOTEL_POOL">Pool</option>
+            <option value="HOTEL_SPA">Spa</option>
+            <option value="HOTEL_GYM">Gym</option>
         </select>
         </div>
         </div>
@@ -95,11 +98,14 @@ function clearImages() {
         Tag: 
         <select name="tag-0">
             <option value="MISCELLANEOUS" selected>Misc.</option>
-            <option value="MEETING_ROOM">Meeting Rooms</option>
-            <option value="HOTEL_ROOM">Hotel Rooms</option>
-            <option value="HOTEL_EXTERIOR">Hotel Exterior</option>
-            <option value="DINING_AREA">Dining Area</option>
-            <option value="COMMON_SPACE">Common Space</option>
+            <option value="MEETING_SPACE">Meeting space</option>
+            <option value="BUILDING_EXTERIOR">Building exterior</option>
+            <option value="OUTDOOR_SPACES">Hotel outdoor (landscape, etc.)</option>
+            <option value="INTERIOR_COMMON_SPACES">Hotel common space (interior)</option>
+            <option value="DINING_SPACE">Dining space</option>
+            <option value="HOTEL_POOL">Pool</option>
+            <option value="HOTEL_SPA">Spa</option>
+            <option value="HOTEL_GYM">Gym</option>
         </select>
         </div>
         </div>
