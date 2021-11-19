@@ -60,9 +60,10 @@ class HotelManager:
         self.session.add(new_image)
         self.session.flush()
 
-        hotel_to_image = HotelToImage(hotel_id=hotel.id, image_id=new_image.id, order=order)
-        self.session.add(hotel_to_image)
-        self.commit_changes()
+        if not spotlight:
+            hotel_to_image = HotelToImage(hotel_id=hotel.id, image_id=new_image.id, order=order)
+            self.session.add(hotel_to_image)
+            self.commit_changes()
 
         if spotlight:
             hotel.spotlight_img_id = new_image.id
