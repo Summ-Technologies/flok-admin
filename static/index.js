@@ -59,13 +59,11 @@ function addImageInput(e) {
         Alt text (optional): <input name="alt-${numInputs}" type="text" />
         </div>
         <div>
-        Spotlight?<input name="spotlight-${numInputs}" type="checkbox" class="mx-1"/>
-        </div>
-        <div>
         Tag: 
         <select name="tag-${numInputs}">
             <option value="MISCELLANEOUS" selected>Misc.</option>
             <option value="MEETING_SPACE">Meeting space</option>
+            <option value="HOTEL_ROOMS">Hotel rooms</option>
             <option value="BUILDING_EXTERIOR">Building exterior</option>
             <option value="OUTDOOR_SPACES">Hotel outdoor (landscape, etc.)</option>
             <option value="INTERIOR_COMMON_SPACES">Hotel common space (interior)</option>
@@ -74,6 +72,9 @@ function addImageInput(e) {
             <option value="HOTEL_SPA">Spa</option>
             <option value="HOTEL_GYM">Gym</option>
         </select>
+        </div>
+        <div>
+        Spotlight?<input name="spotlight-0" type="checkbox" class="mx-1"/>
         </div>
         </div>
         <div class="img-msg" id="img-${numInputs}-msg"></div>
@@ -92,13 +93,11 @@ function clearImages() {
         Alt text (optional): <input name="alt-0" type="text" />
         </div>
         <div>
-        Spotlight?<input name="spotlight-0" type="checkbox" class="mx-1"/>
-        </div>
-        <div>
         Tag: 
         <select name="tag-0">
             <option value="MISCELLANEOUS" selected>Misc.</option>
             <option value="MEETING_SPACE">Meeting space</option>
+            <option value="HOTEL_ROOMS">Hotel rooms</option>
             <option value="BUILDING_EXTERIOR">Building exterior</option>
             <option value="OUTDOOR_SPACES">Hotel outdoor (landscape, etc.)</option>
             <option value="INTERIOR_COMMON_SPACES">Hotel common space (interior)</option>
@@ -107,6 +106,9 @@ function clearImages() {
             <option value="HOTEL_SPA">Spa</option>
             <option value="HOTEL_GYM">Gym</option>
         </select>
+        </div>
+        <div>
+        Spotlight?<input name="spotlight-0" type="checkbox" class="mx-1"/>
         </div>
         </div>
         <div class="img-msg" id="img-0-msg"></div>`).appendTo('#image-inputs');
