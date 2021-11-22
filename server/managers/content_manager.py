@@ -312,13 +312,16 @@ class ContentManager:
     def _get_coordinates(self, address: str):
         """
         Given a street address, returns
-            (lat, long, formatted_address)
+            (lat, long, formatted_address) or (None, None, None) if no coordinates available
         """
 
         # Geocoding an address
         geocode_result = self.gmaps.geocode(address)
-        return (
-            geocode_result[0]["geometry"]["location"]["lat"],
-            geocode_result[0]["geometry"]["location"]["lng"],
-            geocode_result[0]["formatted_address"],
-        )
+        if len(geocode_result):
+            return (
+                geocode_result[0]["geometry"]["location"]["lat"],
+                geocode_result[0]["geometry"]["location"]["lng"],
+                geocode_result[0]["formatted_address"],
+            )
+        else:
+            return None, None, None
