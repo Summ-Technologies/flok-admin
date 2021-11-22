@@ -102,6 +102,7 @@ class ContentManager:
             .execute()
         )
         sheets_df = pd.DataFrame(response["values"][1:], columns=response["values"][0])
+        sheets_df = sheets_df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
         sheets_df = sheets_df.rename(columns=rename_sheets_col_for_dest)
 
         query = self.session.query(Destination)
@@ -197,6 +198,7 @@ class ContentManager:
             .execute()
         )
         sheets_df = pd.DataFrame(response["values"][1:], columns=response["values"][0])
+        sheets_df = sheets_df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
         sheets_df["destination_id"] = sheets_df["Location"].apply(
             lambda name: self.find_dest_by_name(name).id if name else ""
         )
