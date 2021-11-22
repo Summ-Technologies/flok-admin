@@ -1,8 +1,13 @@
+import logging
+
+import googlemaps
 import pandas as pd
 from google.oauth2 import service_account
 from googleapiclient import discovery
 from hawk_db.lodging import Destination, DestinationTag, Hotel, HotelTag, LodgingTag
 from sqlalchemy.orm import Session, load_only
+
+logger = logging.getLogger(__name__)
 
 
 def setup_sheets_service(creds):
@@ -54,6 +59,7 @@ class ContentManager:
     SPREADSHEET_ID = "1ZG7GAu38dnpT0Z_Cwd8g_Nun3vACdyvK6FXOYh31nlo"
     HOTEL_SHEET_NAME = "Hotels"
     DESTINATION_SHEET_NAME = "Locations"
+    gmaps: googlemaps.Client = None
 
     def __init__(self, session: Session, config: dict = {}):
         self.session = session
@@ -62,6 +68,8 @@ class ContentManager:
             self.sheets_service = setup_sheets_service(
                 config.get("GOOGLE_CREDENTIALS_PATH")
             )
+        if self.config.get("GOOGLE_MAPS_KEY"):
+            self.gmaps = googlemaps.Client(key=self.config.get("GOOGLE_MAPS_KEY"))
 
     def commit_changes(self):
         self.session.commit()
@@ -151,6 +159,7 @@ class ContentManager:
             # possibly updated record case
             elif row["_merge"] == "both":
                 db_record = self.session.query(Destination).get(row["id"])
+                logger.info("New destination record: %s", db_record.location)
                 n_tags = (
                     self.session.query(DestinationTag)
                     .filter(DestinationTag.destination_id == db_record.id)
@@ -225,10 +234,10 @@ class ContentManager:
         )
 
         merged["price_per_night"] = merged["price_per_night"].apply(
-            lambda p: float(p.replace(",", "")) if p else p
+            lambda p: float(p.replace(",", "")) if p and isinstance(p, str) else p
         )
         merged["num_rooms"] = merged["num_rooms"].apply(
-            lambda p: float(p.replace(",", "")) if p else p
+            lambda p: float(p.replace(",", "")) if p and isinstance(p, str) else p
         )
 
         for c in tag_cols + ["is_flok_recommended"]:
@@ -249,6 +258,7 @@ class ContentManager:
             # new record case
             if row["_merge"] == "left_only":
                 new_hotel = Hotel(**{c: row[c] for c in basic_cols + id_cols})
+                logger.info("New hotel record: %s", new_hotel.name)
                 self.session.add(new_hotel)
                 self.session.flush()
                 for i, (c, tag) in enumerate(lodging_tags.items()):
@@ -257,11 +267,22 @@ class ContentManager:
                             hotel_id=new_hotel.id, tag_id=tag.id, order=i
                         )
                         self.session.add(hotel_tag)
+                if new_hotel.street_address:
+                    lat, lng, _ = self._get_coordinates(new_hotel.street_address)
+                    new_hotel.address_coordinates_lat = lat
+                    new_hotel.address_coordinates_lng = lng
                 self.session.flush()
 
             # possibly updated record case
             elif row["_merge"] == "both":
                 db_record = self.session.query(Hotel).get(row["id"])
+
+                # check is street_address has changed
+                if db_record.street_address != row["street_address"]:
+                    lat, lng, _ = self._get_coordinates(row["street_address"])
+                    db_record.address_coordinates_lat = lat
+                    db_record.address_coordinates_lng = lng
+
                 for c in basic_cols:
                     setattr(db_record, c, row[c])
                 n_tags = (
@@ -287,3 +308,17 @@ class ContentManager:
                 self.session.flush()
         self.commit_changes()
         return {}
+
+    def _get_coordinates(self, address: str):
+        """
+        Given a street address, returns
+            (lat, long, formatted_address)
+        """
+
+        # Geocoding an address
+        geocode_result = self.gmaps.geocode(address)
+        return (
+            geocode_result[0]["geometry"]["location"]["lat"],
+            geocode_result[0]["geometry"]["location"]["lng"],
+            geocode_result[0]["formatted_address"],
+        )
