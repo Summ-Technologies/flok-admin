@@ -64,7 +64,13 @@ def add_images():
             return "Each image must have a url.", 400
 
         try:
-            response = requests.get(url)
+            response = requests.get(
+                url,
+                headers={
+                    # Put user agent in to fool cloud proxy's from denying scrapers
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/xx.x.xxxx.xx Safari/537.36"
+                },
+            )
             img = PILImage.open(BytesIO(response.content))
         except Exception as e:
             logger.error("%s failed to download with exception", url, exc_info=e)
