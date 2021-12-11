@@ -82,10 +82,10 @@ class ContentManager:
             "tag_beach": "🏖️ Beach",
             "tag_urban": "🌆 Urban",
             "tag_mountains": "️⛰ Mountains",
-            "tag_practical": "Practical",
+            "tag_practical": "🤓 Practical",
             "tag_pool": "🏊 Pool",
             "tag_spa": "🛀 Spa",
-            "tag_unique": "Unique",
+            "tag_unique": "🙌 Unique",
             "tag_meeting_rooms": "🤝 Meeting rooms",
             # "tag_flok_recommended": "Flok Recommended",
         }
